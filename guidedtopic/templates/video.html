@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+{% set sample_video = config.get('WELCOME_VIDEO_URL') %}
+<div class="content-section text-center">
+  <h1 class="steel-text">Sample Playback</h1>
+  {% if sample_video %}
+  <video id="my-player" class="video-js vjs-big-play-centered mb-3" controls width="640" height="360">
+    <source src="{{ sample_video }}" type="application/x-mpegURL">
+  </video>
+  {% else %}
+  <p class="text-muted">Set <code>GUIDEDTOPIC_WELCOME_VIDEO_URL</code> to showcase a sample video.</p>
+  {% endif %}
+
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://vjs.zencdn.net/7.10.2/video.min.js"></script>
+<script>
+  if (document.getElementById('my-player')) {
+    videojs('my-player');
+  }
+</script>
+{% endblock content %}

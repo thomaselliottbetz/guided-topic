@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+  <h1 class="steel-text">Create learning experiences</h1>
+  <h2 class="steel-text">Coach learners with timely questions</h2>
+  <p>
+    Guided Topic helps you transform a single video into an interactive lesson. Add checkpoints,
+    pose multiple-choice or true/false questions, and link each answer to a short remedial clip.
+    Learners get immediate reinforcement while staying immersed in the main story.
+  </p>
+  <p>
+    Upload your video, schedule questions along the timeline, and attach supportive clips to each
+    answer. When the video reaches a checkpoint, it pauses automatically, plays the related clip,
+    and then resumes exactly where the learner left off.
+  </p>
+
+  <hr>
+  {% set welcome_video = config.get('WELCOME_VIDEO_URL') %}
+  {% if welcome_video %}
+  <video id="my-player" class="video-js vjs-big-play-centered mb-3" controls data-setup='{"fluid":true}'>
+    <source id="subject" type="application/x-mpegURL" src="{{ welcome_video }}">
+  </video>
+  {% else %}
+  <p class="text-muted">
+    Add a welcome video by setting the <code>GUIDEDTOPIC_WELCOME_VIDEO_URL</code> environment variable.
+  </p>
+  {% endif %}
+
+  <small class="text-muted">
+    Tip: question timings use the <code>hh:mm:ss</code> format for precision placement.
+  </small>
+</div>
+{% endblock content %}

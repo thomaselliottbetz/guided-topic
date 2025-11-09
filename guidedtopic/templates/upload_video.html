@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+  <form method="POST" action="" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4 steel-text">{{ legend }}</legend>
+
+      <div class="form-group">
+        {{ form.title.label(class="form-control-label") }}
+        {% if form.title.errors %}
+        {{ form.title(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.title.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.title(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        {{ form.description.label(class="form-control-label") }}
+        {{ form.description(class="form-control form-control-lg", rows="3") }}
+      </div>
+
+      <div class="form-group">
+        <div class="custom-control custom-switch">
+          {{ form.is_remedial(class="custom-control-input", id="isRemedialSwitch") }}
+          <label class="custom-control-label" for="isRemedialSwitch">{{ form.is_remedial.label.text }}</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        {{ form.video.label(class="form-control-label") }}
+        {% if form.video.errors %}
+        {{ form.video(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.video.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.video(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+    </fieldset>
+
+    <div class="form-group">
+      {{ form.submit(id="uploadButton", class="btn btn-outline-info") }}
+      <div id="uploading" class="spinner-border text-info ml-3 d-none" role="status">
+        <span class="sr-only">Uploading...</span>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  const uploadButton = document.getElementById("uploadButton");
+  const spinner = document.getElementById("uploading");
+  uploadButton.addEventListener("click", () => {
+    spinner.classList.remove("d-none");
+  });
+</script>
+
+{% endblock content %}
+
+

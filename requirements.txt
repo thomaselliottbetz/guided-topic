@@ -1,0 +1,13 @@
+alembic==1.13.1
+boto3==1.34.21
+email-validator==2.1.0.post1
+Flask==2.2.5
+Flask-Bcrypt==1.0.1
+Flask-Login==0.6.3
+Flask-Mail==0.9.1
+Flask-Migrate==4.0.5
+Flask-SQLAlchemy==2.5.1
+Flask-WTF==1.1.1
+Pillow==10.2.0
+SQLAlchemy==1.4.52
+WTForms==3.1.2

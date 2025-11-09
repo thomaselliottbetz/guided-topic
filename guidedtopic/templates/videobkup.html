@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+{% block content %}
+	<video id="videoPlayer" class="video-js vjs-big-play-centered mb-3" width="640" height="480" controls data-setup="{}" onended=makeVisible()>
+		<source src="{{ url_for('static',filename='tutorial.mp4') }}" type="video/mp4">
+	</video>
+	<div id="q1" style="visibility:hidden">
+	<!-- <div id="q1"> -->
+		<h3>Review Question</h3>
+		<medium>
+			Based on the information in the video, choose the correct answer:
+		<form action="">
+			<input class="" type="radio" id="vehicle4" name="q1" value="correct.mp4">
+			<label for="vehicle3"> A.) The right answer</label><br>
+			<input class="" type="radio" id="vehicle1" name="q1" value="wrong1.mp4">
+			<label for="vehicle1"> B.) Some wrong answer here</label><br>
+			<input class="" type="radio" id="vehicle2" name="q1" value="wrong2.mp4">
+			<label for="vehicle2"> C.) Another mistaken answer here</label><br>
+			<input class="" type="radio" id="vehicle3" name="q1" value="wrong3.mp4">
+			<label for="vehicle3"> D.) A third wrong choice</label><br>
+			<input type="button" id="btn2" class="btn btn-primary" value="Submit">
+		</form>
+		</medium>
+
+	</div>
+
+
+    <script>
+        const btn = document.querySelector('#btn2');
+        // handle click button
+        btn.onclick = function () {
+            const rbs = document.querySelectorAll('input[name="q1"]');
+            let selectedValue;
+            for (const rb of rbs) {
+                if (rb.checked) {
+                    selectedValue = rb.value;
+                    break;
+                }
+            }
+            // alert(selectedValue);
+            playFollowUp(selectedValue)
+        };
+    </script>
+
+	
+
+	<script>
+		function makeVisible() {
+			document.getElementById('q1').setAttribute("style", "visibility:visible")
+		}
+
+		function playFollowUp(sV) {
+			var videoSection = document.getElementById('videoPlayer')
+			var videoElement = document.createElement('video');
+			while (videoSection.hasChildNodes())
+				videoSection.removeChild(videoSection.firstChild);
+			videoElement.setAttribute("src","static/" +sV);
+			videoElement.setAttribute("width","640");
+			videoElement.setAttribute("height","480");	
+			videoElement.setAttribute("controls","true")
+			videoElement.setAttribute("autoplay","true")
+			// ÷videoElement.setAttribute("onended","myFunction3()")
+			videoSection.appendChild(videoElement);
+		}
+
+		// function poseQuestion() {
+		// 	var question_section = document.getElementById('review_question')
+		// }
+
+		// function myFunction() {
+		// 	var videoSection = document.getElementById('video')
+		// 	var videoElement = document.createElement('video');
+		// 	while (videoSection.hasChildNodes())
+		// 		videoSection.removeChild(videoSection.firstChild);
+		// 	videoElement.setAttribute("src","static/vids/w.mp4");
+		// 	videoElement.setAttribute("width","640");
+		// 	videoElement.setAttribute("height","480");	
+		// 	videoElement.setAttribute("controls","true")
+		// 	videoElement.setAttribute("autoplay","true")
+		// 	// ÷videoElement.setAttribute("onended","myFunction3()")
+		// 	videoSection.appendChild(videoElement);
+		// }
+
+		// function myFunction2() {
+		// 	var videoSection = document.getElementById('video')
+		// 	var videoElement = document.createElement('video');
+		// 	while (videoSection.hasChildNodes())
+		// 		videoSection.removeChild(videoSection.firstChild);
+		// 	videoElement.setAttribute("src","static/c.mp4");
+		// 	videoElement.setAttribute("width","640");
+		// 	videoElement.setAttribute("height","480");			
+		// 	videoElement.setAttribute("controls","true")
+		// 	videoElement.setAttribute("autoplay","true")
+		// 	// videoElement.setAttribute("onended","myFunction3()")
+		// 	videoSection.appendChild(videoElement);
+		// }
+
+		// function myFunction3() {
+  // 			alert("The video has ended");
+		// }
+
+	</script>
+
+{% endblock content %}

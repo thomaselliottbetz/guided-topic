@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+  <h1 class="steel-text">Remedial &amp; Supplemental Videos</h1>
+  <p class="text-muted">Short clips that reinforce concepts or clarify misconceptions.</p>
+
+  {% for video in videos.items %}
+  <section class="mb-4">
+    <h5><a href="{{ url_for('videos.study_video', v_id=video.id) }}">{{ video.title }}</a></h5>
+    <p><em>Description:</em> {{ video.description or "No description provided." }}</p>
+    <hr>
+  </section>
+  {% else %}
+  <p class="text-muted">No supplemental videos are available yet.</p>
+  {% endfor %}
+
+  <nav aria-label="Remedial videos pagination">
+    {% for page_num in videos.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        <a
+          class="btn {% if videos.page == page_num %}btn-info{% else %}btn-outline-info{% endif %} mb-4"
+          href="{{ url_for('videos.remedialvideos', page=page_num) }}"
+        >
+          {{ page_num }}
+        </a>
+      {% else %}
+        <span class="text-muted px-2">&hellip;</span>
+      {% endif %}
+    {% endfor %}
+  </nav>
+</div>
+{% endblock content %}

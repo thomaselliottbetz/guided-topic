@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+  <h2 class="steel-text">Question &amp; Video Management</h2>
+  <p>Use the controls below each video to update metadata or edit associated questions.</p>
+  <hr>
+
+  {% for video in videos.items %}
+  <section class="mb-5">
+    <h5 class="mb-2">{{ video.title }}</h5>
+    <div class="mb-3">
+      <video
+        class="video-js vjs-big-play-centered mb-3"
+        width="320"
+        height="240"
+        controls
+        data-setup='{"fluid":true}'
+      >
+        <source src="{{ video.video_file }}" type="application/x-mpegURL">
+      </video>
+    </div>
+
+    <div class="btn-group mb-2" role="group" aria-label="Video management actions">
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('videos.revise_video', v_id=video.id) }}">Video Edit</a>
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('qna.showallquestions', v_id=video.id) }}">Q&amp;A Edit</a>
+      <button
+        type="button"
+        class="btn btn-danger btn-sm"
+        data-toggle="modal"
+        data-target="#deleteModal{{ video.id }}"
+      >
+        Delete
+      </button>
+    </div>
+
+    <div
+      class="modal fade"
+      id="deleteModal{{ video.id }}"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="deleteModalLabel{{ video.id }}"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel{{ video.id }}">Delete “{{ video.title }}”?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Removing this video will also delete its questions. This cannot be undone.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <form action="{{ url_for('videos.delete_video', video_id=video.id) }}" method="POST">
+              <button class="btn btn-danger" type="submit">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% else %}
+  <p class="text-muted">No videos found.</p>
+  {% endfor %}
+
+  <nav aria-label="Course video pagination">
+    {% for page_num in videos.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        <a
+          class="btn {% if videos.page == page_num %}btn-info{% else %}btn-outline-info{% endif %} mb-4"
+          href="{{ url_for('videos.course_video', page=page_num) }}"
+        >
+          {{ page_num }}
+        </a>
+      {% else %}
+        <span class="text-muted px-2">&hellip;</span>
+      {% endif %}
+    {% endfor %}
+  </nav>
+</div>
+{% endblock content %}
+

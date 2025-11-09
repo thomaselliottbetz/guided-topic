@@ -1,0 +1,166 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="content-section">
+  <h1 class="steel-text">Study Video</h1>
+  <p class="text-muted">There are {{ questions.count() }} questions posed during this lesson.</p>
+
+  <div id="maintopic" class="mb-3">
+    <video
+      id="my-player"
+      class="video-js vjs-big-play-centered mb-3"
+      controls
+      data-setup='{"fluid":true}'
+      width="640"
+    >
+      <source id="subject" src="{{ video.video_file }}" type="application/x-mpegURL">
+    </video>
+    <h5>Total views: {{ views }}</h5>
+  </div>
+</section>
+
+<div
+  class="modal fade"
+  id="questionModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="questionModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="questionModalLabel">Verify Your Understanding</h5>
+        <button id="modalCloseBtn" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="remedialContainer"></div>
+
+        <script>const allPoseTimes = {};</script>
+        {% for q in questions %}
+        <div id="question-{{ q.id }}" class="question-block" style="display: none;">
+          <h4 class="text-danger">Question {{ loop.index }}</h4>
+          <p>{{ q.content }}</p>
+
+          {% set options = [
+            ('A', q.contentA, q.targetvidA),
+            ('B', q.contentB, q.targetvidB),
+            ('C', q.contentC, q.targetvidC),
+            ('D', q.contentD, q.targetvidD),
+            ('E', q.contentE, q.targetvidE),
+          ] %}
+
+          {% for label, text, target in options if text %}
+          <div class="custom-control custom-radio">
+            <input
+              class="custom-control-input"
+              type="radio"
+              id="option-{{ q.id }}-{{ label }}"
+              name="alternatives"
+              value="{{ target }}"
+            >
+            <label class="custom-control-label" for="option-{{ q.id }}-{{ label }}">
+              <span class="text-danger">{{ label }}.</span> {{ text }}
+            </label>
+          </div>
+          {% endfor %}
+        </div>
+        <script>allPoseTimes[{{ q.pose_time }}] = {{ q.id }};</script>
+        {% endfor %}
+      </div>
+      <div class="modal-footer">
+        <button id="skipBtn" type="button" class="btn btn-secondary" data-dismiss="modal">Skip / Close</button>
+        <button id="submitAnswerBtn" type="button" class="btn btn-primary">Submit Answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const remedialContainer = document.getElementById("remedialContainer");
+  const submitAnswerBtn = document.getElementById("submitAnswerBtn");
+  const questionModal = "#questionModal";
+  let currentTimestamp = -1;
+
+  function clearRemedial() {
+    while (remedialContainer.firstChild) {
+      remedialContainer.removeChild(remedialContainer.firstChild);
+    }
+  }
+
+  function hideQuestion(questionId) {
+    const element = document.getElementById(`question-${questionId}`);
+    if (element) {
+      element.style.display = "none";
+    }
+  }
+
+  $(document).ready(() => {
+    $(questionModal).on("hidden.bs.modal", clearRemedial);
+
+    submitAnswerBtn.addEventListener("click", () => {
+      const selected = document.querySelector('input[name="alternatives"]:checked');
+      if (!selected) {
+        alert("Select an answer to continue.");
+        return;
+      }
+
+      const [targetVideoId] = selected.value.split(".");
+      $.get(`/getvideopath/${targetVideoId}`, (data) => {
+        clearRemedial();
+
+        const remedialPlayer = document.createElement("video-js");
+        remedialPlayer.id = "remedial";
+        remedialPlayer.className = "video-js";
+        remedialPlayer.setAttribute("data-setup", '{"fluid":true}');
+        remedialPlayer.setAttribute("width", "320");
+        remedialPlayer.setAttribute("height", "240");
+        remedialPlayer.setAttribute("controls", "true");
+        remedialPlayer.setAttribute("autoplay", "true");
+
+        const source = document.createElement("source");
+        source.src = data;
+        source.type = "application/x-mpegURL";
+        remedialPlayer.appendChild(source);
+        remedialContainer.appendChild(remedialPlayer);
+
+        videojs(remedialPlayer);
+      });
+    });
+  });
+
+  videojs('my-player').ready(function readyPlayer() {
+    this.on('timeupdate', () => {
+      const currentTime = Math.floor(this.currentTime());
+      if (currentTimestamp !== -1 && currentTimestamp !== currentTime) {
+        currentTimestamp = -1;
+      }
+
+      if (currentTime !== currentTimestamp && Object.prototype.hasOwnProperty.call(allPoseTimes, currentTime)) {
+        currentTimestamp = currentTime;
+        const questionId = allPoseTimes[currentTime];
+        const questionElement = document.getElementById(`question-${questionId}`);
+
+        if (questionElement) {
+          this.pause();
+          this.exitFullscreen();
+
+          document.querySelectorAll('input[name="alternatives"]').forEach((input) => {
+            input.checked = false;
+          });
+
+          clearRemedial();
+          questionElement.style.display = "block";
+          $(questionModal).modal('toggle');
+
+          const closeButtons = [document.getElementById("skipBtn"), document.getElementById("modalCloseBtn")];
+          closeButtons.forEach((btn) => {
+            btn.onclick = () => hideQuestion(questionId);
+          });
+        }
+      }
+    });
+  });
+</script>
+{% endblock content %}

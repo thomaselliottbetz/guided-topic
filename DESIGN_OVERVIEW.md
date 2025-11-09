@@ -1,0 +1,4 @@
+# Design Overview
+
+Guided Topic delivers an interactive learning loop around a primary instructional video. Educators begin by uploading a source file, which is stored on S3 and registered in the application with descriptive metadata. Authoring continues in the question editor: creators schedule checkpoints along the timeline and write multiple-choice or true/false prompts. Each answer choice can reference a remedial clip, allowing the lesson to branch briefly into targeted explanations or reinforcement. During playback, the learner’s main video pauses at each checkpoint while the overlay presents the question. After the learner selects an option, the associated remedial clip plays and the system tracks view metrics. When the branch finishes, control returns to the exact timestamp in the main video, ensuring learners resume where they left off while still benefiting from the tailored guidance.
+

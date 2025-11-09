@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+  <h1 class="steel-text">Announcements</h1>
+  <p>News, updates, and guidance for the community.</p>
+
+  {% for post in posts.items %}
+  <article class="media content-section">
+    <div>
+      <img
+        class="rounded-circle article-img"
+        src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}"
+        alt="{{ post.author.username }} profile picture"
+      >
+    </div>
+    <div class="w-75 media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">
+          {{ post.author.username }}
+        </a>
+        <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+      </div>
+      <h2>
+        <a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">
+          {{ post.title }}
+        </a>
+      </h2>
+      <p class="article-content">{{ post.content|urlize(20, true) }}</p>
+    </div>
+  </article>
+  {% else %}
+  <p class="text-muted">No announcements just yet.</p>
+  {% endfor %}
+
+  <nav aria-label="Announcement pagination">
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        <a
+          class="btn {% if posts.page == page_num %}btn-info{% else %}btn-outline-info{% endif %} mb-4"
+          href="{{ url_for('main.home', page=page_num) }}"
+        >
+          {{ page_num }}
+        </a>
+      {% else %}
+        <span class="text-muted px-2">&hellip;</span>
+      {% endif %}
+    {% endfor %}
+  </nav>
+</div>
+
+<script>
+  function toggleIcons() {
+    const icons = document.getElementsByClassName("article-img");
+    const shouldHide = window.innerWidth < 380;
+    for (let i = 0; i < icons.length; i += 1) {
+      icons[i].style.display = shouldHide ? "none" : "unset";
+    }
+  }
+
+  window.addEventListener("load", toggleIcons);
+  window.addEventListener("resize", toggleIcons);
+</script>
+{% endblock content %}

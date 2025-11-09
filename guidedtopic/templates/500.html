@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="content-section text-center">
+  <h1 class="steel-text">Something Went Wrong</h1>
+  <p class="text-muted">An unexpected error occurred. Please try again in a moment.</p>
+  <a class="btn btn-outline-info" href="{{ url_for('main.home') }}">Back to Home</a>
+</div>
+{% endblock content %}

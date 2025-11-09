@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+  <h2 class="steel-text">Questions for “{{ video.title }}”</h2>
+  <video class="video-js vjs-big-play-centered mb-3" controls data-setup='{"fluid":true}'>
+    <source src="{{ video.video_file }}" type="application/x-mpegURL">
+  </video>
+
+  <a class="btn btn-outline-info btn-sm mb-3" href="{{ url_for('qna.question_editor', v_id=video.id) }}">Add New Question</a>
+
+  {% if questions.count() > 0 %}
+  {% for question in questions %}
+  <section class="mb-4">
+    <div class="d-flex flex-wrap align-items-center mb-2">
+      <h5 class="mb-2 mr-3">{{ question.content }}</h5>
+      <span class="badge badge-secondary mb-2">Time: {{ question.pose_time }}s</span>
+    </div>
+
+    <div class="btn-group mb-2" role="group" aria-label="Question actions">
+      <a class="btn btn-secondary btn-sm" href="{{ url_for('qna.revise_question', q_id=question.id) }}">Edit</a>
+      <button class="btn btn-secondary btn-sm" type="button" data-toggle="collapse" data-target="#answers-{{ question.id }}" aria-expanded="false" aria-controls="answers-{{ question.id }}">Toggle Answers</button>
+      <button class="btn btn-danger btn-sm" type="button" data-toggle="modal" data-target="#deleteModal{{ question.id }}">Delete</button>
+    </div>
+
+    <div class="collapse" id="answers-{{ question.id }}">
+      <ul class="list-group">
+        {% set answers = [
+          ('A', question.contentA, question.targetvidA),
+          ('B', question.contentB, question.targetvidB),
+          ('C', question.contentC, question.targetvidC),
+          ('D', question.contentD, question.targetvidD),
+          ('E', question.contentE, question.targetvidE),
+        ] %}
+        {% for label, text, target in answers if text %}
+        <li class="list-group-item">
+          <span class="text-danger font-weight-bold mr-2">{{ label }}.</span>
+          {{ text }}
+          {% if target %}<span class="text-muted">(remedial video: {{ target }})</span>{% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="modal fade" id="deleteModal{{ question.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ question.id }}" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel{{ question.id }}">Delete this question?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">This will remove the question and its answer mapping.</div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <form action="{{ url_for('qna.delete_question', q_id=question.id, v_id=video.id) }}" method="POST">
+              <button class="btn btn-danger" type="submit">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+  </section>
+  {% endfor %}
+  {% else %}
+  <p class="text-muted">No questions have been created for this video yet.</p>
+  {% endif %}
+</div>
+{% endblock content %}

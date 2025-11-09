@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block content %}
+{% set legend_text = legend or ('Question Editor: ' ~ video.title) %}
+<div class="content-section">
+  <form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4">{{ legend_text }}</legend>
+
+      <div class="form-group">
+        {{ form.question.label(class="form-control-label") }}
+        {{ form.question(class="form-control form-control-lg", rows="3") }}
+      </div>
+
+      <div class="form-group">
+        {{ form.pose_time.label(class="form-control-label") }}
+        {{ form.pose_time(class="html-duration-picker") }}
+        {% if pose_time_hint %}
+        <small class="form-text text-muted">Current value: {{ pose_time_hint }}</small>
+        {% endif %}
+      </div>
+
+      {% for answer_field, target_field in (
+        (form.answer1, form.answer1_target),
+        (form.answer2, form.answer2_target),
+        (form.answer3, form.answer3_target),
+        (form.answer4, form.answer4_target),
+        (form.answer5, form.answer5_target),
+      ) %}
+      <div class="form-row">
+        <div class="form-group col-md-8">
+          {{ answer_field.label(class="form-control-label") }}
+          {{ answer_field(class="form-control form-control-lg", rows="2") }}
+        </div>
+        <div class="form-group col-md-4">
+          {{ target_field.label(class="form-control-label") }}
+          {{ target_field(class="custom-select") }}
+        </div>
+      </div>
+      {% endfor %}
+
+      {% if form.errors %}
+      <div class="alert alert-danger mt-3">Please review the highlighted fields.</div>
+      {% endif %}
+    </fieldset>
+
+    <div class="form-group">
+      {{ form.submit(class="btn btn-outline-info") }}
+    </div>
+  </form>
+</div>
+{% endblock content %}
