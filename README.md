@@ -11,6 +11,7 @@ Guided Topic is a Flask application that turns instructional videos into interac
 - User model supports both password and OAuth authentication methods.
 - AWS S3 uploads and playback URLs are managed via utilities in `guidedtopic/videos/utils.py`.
 - Templates and static assets live under `guidedtopic/templates` and `guidedtopic/static`.
+- Code is organized with clear sections, comprehensive comments, and helper functions for maintainability.
 
 ## Tech Stack
 
@@ -102,8 +103,14 @@ guidedtopic/
     │   ├── forms.py
     │   └── utils.py
     ├── videos/
+    │   ├── routes.py
+    │   ├── forms.py
+    │   └── utils.py      # S3 upload utilities
     ├── templates/
     └── static/
+        ├── main.css
+        └── profile_pics/
+            └── default.jpg
 ```
 
 ## Environment Variables
@@ -189,5 +196,14 @@ pytest tests/test_oauth.py
 ```
 
 The test suite includes OAuth authentication tests that verify user creation, account linking, and provider-specific metadata handling.
+
+## Code Quality
+
+The codebase emphasizes maintainability with:
+- Comprehensive docstrings and inline comments explaining complex logic
+- Logical code organization with routes grouped by functionality
+- Helper functions for repeated operations (e.g., time parsing)
+- Clear variable naming and consistent patterns
+- Security-focused comments explaining authentication and authorization flows
 
 © 2025 Thomas Betz — MIT License
