@@ -20,10 +20,29 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False,
                            default="default.jpg")
-    password = db.Column(db.String(60), nullable=False)
+    password = db.Column(db.String(60), nullable=True)  # Optional for OAuth users
     posts = db.relationship('Post', backref='author', lazy=True)
     video = db.relationship('Video', backref='author', lazy=True)
     uploadsvideo = db.Column(db.Boolean, default=False)
+    
+    # OAuth fields
+    oauth_provider = db.Column(db.String(50), nullable=True)  # 'google' or 'azure'
+    oauth_id = db.Column(db.String(255), nullable=True)
+    oauth_email = db.Column(db.String(120), nullable=True)
+    oauth_tenant_id = db.Column(db.String(255), nullable=True)  # For Azure AD tenant
+    oauth_domain = db.Column(db.String(255), nullable=True)  # For Google Workspace domain
+    
+    __table_args__ = (
+        db.UniqueConstraint('oauth_provider', 'oauth_id', name='uq_oauth_provider_id'),
+    )
+    
+    def has_password(self):
+        """Check if user has password authentication enabled."""
+        return self.password is not None
+    
+    def has_oauth(self):
+        """Check if user has OAuth authentication enabled."""
+        return self.oauth_provider is not None
 
     def get_reset_token(self, expires_sec=1800):
         """Generate a time-limited token for password reset emails."""

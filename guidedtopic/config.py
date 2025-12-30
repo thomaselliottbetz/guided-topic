@@ -65,6 +65,19 @@ class Config:
         if ext.strip()
     }
 
+    # Google OAuth (works for both consumer and Google Workspace)
+    GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+    GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+    GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
+
+    # Microsoft Entra ID (Azure AD) OAuth/OIDC
+    AZURE_AD_TENANT_ID = os.getenv("AZURE_AD_TENANT_ID", "common")  # "common" for multi-tenant
+    AZURE_AD_CLIENT_ID = os.getenv("AZURE_AD_CLIENT_ID")
+    AZURE_AD_CLIENT_SECRET = os.getenv("AZURE_AD_CLIENT_SECRET")
+    
+    # OAuth redirect base URL
+    OAUTH_REDIRECT_BASE = os.getenv("OAUTH_REDIRECT_BASE", "http://localhost:5000")
+
 
 def configure_logging() -> Dict[str, Any]:
     """Return a dictConfig structure based on environment log-level overrides."""

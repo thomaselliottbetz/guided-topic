@@ -1,6 +1,9 @@
 __pycache__/
 .pytest_cache/
 .venv/
+venv/
+env/
+ENV/
 .DS_Store
 instance/config.py
 *.pyc
@@ -9,3 +12,6 @@ instance/config.py
 *.db
 migrations/versions/
 uploads/
+*.log
+.env
+.env.local

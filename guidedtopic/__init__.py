@@ -24,6 +24,7 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
     from guidedtopic.main.routes import main
     from guidedtopic.posts.routes import posts
     from guidedtopic.users.routes import users
+    from guidedtopic.users.oauth import oauth_bp
     from guidedtopic.videos.routes import videos
     from guidedtopic.qna.routes import qna
     from guidedtopic.errors.handlers import errors
@@ -31,6 +32,7 @@ def create_app(config_class: Type[Config] = Config) -> Flask:
     app.register_blueprint(main)
     app.register_blueprint(posts)
     app.register_blueprint(users)
+    app.register_blueprint(oauth_bp)
     app.register_blueprint(videos)
     app.register_blueprint(qna)
     app.register_blueprint(errors)

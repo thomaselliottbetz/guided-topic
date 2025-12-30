@@ -52,5 +52,24 @@
       </small>
     </div>
   </form>
+
+  <!-- OAuth Providers -->
+  <div class="text-center my-4">
+    <span class="text-muted">OR</span>
+  </div>
+
+  <div class="oauth-section">
+    <p class="text-center mb-3">Sign in with:</p>
+    <div class="d-flex flex-column gap-2">
+      <a href="{{ url_for('oauth.oauth_login', provider='google') }}" 
+         class="btn btn-outline-danger btn-block">
+        <i class="fab fa-google"></i> Google / Google Workspace
+      </a>
+      <a href="{{ url_for('oauth.oauth_login', provider='azure') }}" 
+         class="btn btn-outline-primary btn-block">
+        <i class="fab fa-microsoft"></i> Microsoft Entra ID
+      </a>
+    </div>
+  </div>
 </div>
 {% endblock content %}
