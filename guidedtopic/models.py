@@ -2,7 +2,7 @@ from datetime import datetime
 
 from flask import current_app
 from flask_login import UserMixin
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import URLSafeTimedSerializer
 
 from guidedtopic.extensions import db, login_manager
 
@@ -46,15 +46,15 @@ class User(db.Model, UserMixin):
 
     def get_reset_token(self, expires_sec=1800):
         """Generate a time-limited token for password reset emails."""
-        s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
-        return s.dumps({'user_id': self.id}).decode('utf-8')
+        s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+        return s.dumps({'user_id': self.id}, salt='password-reset')
 
     @staticmethod
     def verify_reset_token(token):
         """Return the user associated with a reset token, or None if invalid."""
-        s = Serializer(current_app.config['SECRET_KEY'])
+        s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
         try:
-            user_id = s.loads(token)['user_id']
+            user_id = s.loads(token, salt='password-reset', max_age=1800)['user_id']
         except:
             return None
         return User.query.get(user_id)
