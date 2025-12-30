@@ -1,12 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, TextAreaField, SelectField, TimeField, IntegerField, TextField
+from wtforms import SubmitField, TextAreaField, SelectField, TimeField, IntegerField, StringField
 
 
 class QandAForm(FlaskForm):
     """Author or edit a timed branching question for a video."""
     question = TextAreaField('Question Content:')
     # pose_time = SelectField(u'Question pose time:', validate_choice=False, coerce=int)
-    pose_time = TextField(u'Question pose time:')
+    pose_time = StringField(u'Question pose time:')
     # pose_time = TimeField(u'Question pose time:', format='%H:%M:%S')
 
     answer1 = TextAreaField('Question Response A:')
